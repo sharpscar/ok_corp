@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QTableWidget" name="tw_schedule">
@@ -196,10 +196,10 @@
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>360</y>
-        <width>261</width>
-        <height>131</height>
+        <x>40</x>
+        <y>350</y>
+        <width>331</width>
+        <height>151</height>
        </rect>
       </property>
       <property name="title">
@@ -216,7 +216,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="s_le"/>
+          <widget class="QLineEdit" name="s_day_le"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>시간</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="s_timeEdit"/>
          </item>
         </layout>
        </item>
@@ -230,7 +240,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="e_le"/>
+          <widget class="QLineEdit" name="e_day_le"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>시간</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="e_timeEdit"/>
          </item>
         </layout>
        </item>

@@ -45,7 +45,11 @@ Schedule::Schedule(QWidget *parent)
     connect(ui->reg_sch_btn, &QPushButton::clicked, this, &Schedule::make_schedule);
 
 
+    // 0번 페이지가 행사 리스팅
+    // 1번 페이지가 행사 등록
     ui->stackedWidget->setCurrentIndex(0);
+
+
     //서버에 json 생성후 요청을 보낸다.
     this->req_event_json_for_first_page();
     connect(ui->tw_schedule, &QTableWidget::cellClicked, this, &Schedule::onTableItemClicked);
@@ -228,7 +232,7 @@ void Schedule::req_event_json_for_first_page(){
 void Schedule::onCalendarDateSelected_start(const QDate &date){
     qDebug()<< date;
 
-    ui->s_le->setText(date.toString("yyyy-MM-dd"));
+    ui->s_day_le->setText(date.toString("yyyy-MM-dd"));
     s_date = date.toString();
     //텍스트 에디터 창 뜨고  제목도 뜨고
 }
@@ -236,7 +240,7 @@ void Schedule::onCalendarDateSelected_start(const QDate &date){
 void Schedule::onCalendarDateSelected_end(const QDate &date){
     qDebug()<< date;
 
-    ui->e_le->setText(date.toString("yyyy-MM-dd"));
+    ui->e_day_le->setText(date.toString("yyyy-MM-dd"));
     e_date = date.toString();
     //텍스트 에디터 창 뜨고  제목도 뜨고
 }
@@ -244,8 +248,24 @@ void Schedule::onCalendarDateSelected_end(const QDate &date){
 void Schedule::make_schedule(){
 
     // json생성
-    s_date = ui->s_le->text();
-    e_date = ui->e_le->text();
+    s_date = ui->s_day_le->text();
+    QDate Qs_date = QDate::fromString(s_date,"yyyy-MM-dd");
+    e_date = ui->e_day_le->text();
+    QDate Qe_date = QDate::fromString(e_date,"yyyy-MM-dd");
+
+    QString s_time = ui->s_timeEdit->text();
+    QString e_time = ui->e_timeEdit->text();
+    QTime Qs_time = QTime::fromString(s_time, "HH:mm:ss");
+    QTime Qe_time = QTime::fromString(e_time, "HH:mm:ss");
+
+    QDateTime s_datetime;
+    s_datetime.setDate(Qs_date);
+    s_datetime.setTime(Qs_time);
+
+    QDateTime e_datetime;
+    e_datetime.setDate(Qe_date);
+    e_datetime.setTime(Qe_time);
+
     event_name = ui->event_name_le->text();
     event_detail = ui->event_info_le->toPlainText();
 
@@ -256,9 +276,11 @@ void Schedule::make_schedule(){
     json j;
     j["type"]= "req_event_create";
 
+    // 여기서 시작일시 , 종료일시를 시간 값을 가져와서  합쳐서 넣어야 한다!
     json data;
-    data["s_date"] = s_date.toStdString();
-    data["e_date"] = e_date.toStdString();
+    data["s_date"] = s_datetime.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+    data["e_date"] = e_datetime.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+
     data["event_name"] = event_name.toStdString();
     data["event_organization"] = org_name.toStdString();
     data["organization_id"]= organization_id;
