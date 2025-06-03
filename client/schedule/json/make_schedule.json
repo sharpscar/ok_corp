@@ -1,11 +1,12 @@
 {
     "data": {
-        "e_date": "2025-06-05",
-        "event_detail": "무서운 상황",
-        "event_name": "간단한 행사",
-        "event_organization": "ok상사",
+        "e_date": "2025-06-28 00:00:00",
+        "event_detail": "수정 테스트1234",
+        "event_name": "어떤 반응일까",
+        "org_name": "오키상사",
         "organization_id": 1234,
-        "s_date": "2025-06-04"
+        "s_date": "2025-06-17 00:00:00",
+        "schedule_id": 4
     },
-    "type": "req_event_create"
+    "type": "req_event_update"
 }

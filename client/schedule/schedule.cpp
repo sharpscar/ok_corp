@@ -93,7 +93,9 @@ void Schedule::performDelete(int schedule_id){
     j["data"] = data;
 
     QString jsonString = QString::fromStdString(j.dump(4));
-    QString filePath ="/home/scar/py_workspace/schedule/json/make_schedule.json";
+    QString filePath =QString(FILE_PATH)+"/make_schedule.json";
+
+
 
     QFile file(filePath);
     if(file.open(QIODevice::WriteOnly|QIODevice::Text)){
@@ -141,7 +143,7 @@ void Schedule::update_schedule(){
     j["data"] = data;
     //json 문자열로 변환
     QString jsonString = QString::fromStdString(j.dump(4));
-    QString filePath ="/home/scar/py_workspace/schedule/json/make_schedule.json";
+    QString filePath =QString(FILE_PATH)+"/make_schedule.json";
     QFile file(filePath);
     if(file.open(QIODevice::WriteOnly|QIODevice::Text)){
         QTextStream out(&file);
@@ -155,7 +157,8 @@ void Schedule::update_schedule(){
     }
 
     this->send_json_to_server();
-    // this->req_event_json_for_first_page();
+    // 이건 수정후 테이블 위젯을 새로고침하는 내용!
+    this->send_json_to_server_for_read_schedule();
     // 2. 서버로 수정 요청
 
 
@@ -172,9 +175,9 @@ void Schedule::onTableItemClicked(int row, int column){
     // 단체명
     ui->le_org->setText(ui->tw_schedule->item(row, 0)->text());
     //시작일
-    ui->le_start->setText(ui->tw_schedule->item(row, 2)->text());
+    ui->le_start->setText(ui->tw_schedule->item(row, 3)->text());
     //종료일
-    ui->le_end->setText(ui->tw_schedule->item(row, 3)->text());
+    ui->le_end->setText(ui->tw_schedule->item(row, 4)->text());
 
     //담당자 이건 해당 행사 단체에 관련한 컬럼이다 -> organization_id를 통해서 단체 테이블의 담당 부서를 조회하고 부서의 담당자정보를 가져와야 한다.
 
@@ -183,11 +186,11 @@ void Schedule::onTableItemClicked(int row, int column){
     //행사명
     ui->s_name->setText(ui->tw_schedule->item(row, 1)->text());
     //행사 상세
-    ui->s_detail->setText(ui->tw_schedule->item(row, 6)->text());
+    ui->s_detail->setText(ui->tw_schedule->item(row, 2)->text());
     //단체 아이디
 
 
-    QTableWidgetItem* idItem = ui->tw_schedule->item(row, 5);
+    QTableWidgetItem* idItem = ui->tw_schedule->item(row, 6);
     if(idItem){
         schedule_id = idItem->text().toInt();
     }
@@ -202,7 +205,7 @@ void Schedule::req_event_json_for_first_page(){
     //json 문자열로 변환
     QString jsonString = QString::fromStdString(j.dump(4));
 
-    QString filePath ="/home/scar/py_workspace/schedule/json/read_schedule.json";
+    QString filePath =QString(FILE_PATH)+"/read_schedule.json";
 
     QFile file(filePath);
 
@@ -265,7 +268,7 @@ void Schedule::make_schedule(){
     //json 문자열로 변환
     QString jsonString = QString::fromStdString(j.dump(4));
 
-    QString filePath ="/home/scar/py_workspace/schedule/json/make_schedule.json";
+    QString filePath =QString(FILE_PATH)+"/make_schedule.json";
 
     QFile file(filePath);
 
@@ -288,8 +291,9 @@ void Schedule::make_schedule(){
 
 void Schedule::send_json_to_server_for_read_schedule(){
 
+    QString path_ = QString(FILE_PATH)+"/read_schedule.json";
     // json 파일 읽기
-    std::ifstream file("/home/scar/py_workspace/schedule/json/read_schedule.json");
+    std::ifstream file(path_.toStdString());
     if(!file.is_open()){
         std::cerr <<"파일을 열수 없습니다.\n";
         exit(1);
@@ -362,7 +366,7 @@ void Schedule::send_json_to_server_for_read_schedule(){
         table->setColumnCount(7);
         table->setHorizontalHeaderLabels({
             // "ID", "시작일시", "종료일시", "이름", "단체ID", "단체명", "행사상세 내용"
-            "단체명","행사명","시작일시","종료일시","단체_id","id","행사 상세 내용"
+            "단체명","행사명","행사 상세 내용","시작일시","종료일시","단체_id","id"
         });
 
         // std::string jsonStr = response_json;    //  이줄에서 난 오류 response_json이게 JSON 객체 혹은 배열인데 이걸 또 문자열로 직접 변환하려고 해서 난 오류이다.
@@ -376,11 +380,12 @@ void Schedule::send_json_to_server_for_read_schedule(){
 
             table->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(item["event_organization"])));
             table->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(item["s_name"])));
-            table->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(item["s_start_date"])));
-            table->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(item["s_end_date"])));
-            table->setItem(i, 4, new QTableWidgetItem(QString::number(static_cast<int>(item["organization_id"]) )));
-            table->setItem(i, 5, new QTableWidgetItem(QString::number(static_cast<int>(item["schedule_id"]) )));
-            table->setItem(i, 6, new QTableWidgetItem(QString::fromStdString(item["event_detail"])));
+            table->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(item["event_detail"])));
+            table->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(item["s_start_date"])));
+            table->setItem(i, 4, new QTableWidgetItem(QString::fromStdString(item["s_end_date"])));
+            table->setItem(i, 5, new QTableWidgetItem(QString::number(static_cast<int>(item["organization_id"]) )));
+            table->setItem(i, 6, new QTableWidgetItem(QString::number(static_cast<int>(item["schedule_id"]) )));
+
         }
 
         table->resizeColumnsToContents();
@@ -395,9 +400,10 @@ void Schedule::send_json_to_server_for_read_schedule(){
 }
 
 void Schedule::send_json_to_server(){
+    QString path_ = QString(FILE_PATH)+"/make_schedule.json";
 
     // json 파일 읽기
-    std::ifstream file("/home/scar/py_workspace/schedule/json/make_schedule.json");
+    std::ifstream file(path_.toStdString());
     if(!file.is_open()){
         std::cerr <<"파일을 열수 없습니다.\n";
         exit(1);

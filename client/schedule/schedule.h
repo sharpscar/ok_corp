@@ -23,6 +23,9 @@
 #include <json.hpp>
 #include <QMessageBox>
 
+#define FILE_PATH "/home/scar/ok_corp/client/schedule/json/"
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class Schedule;
