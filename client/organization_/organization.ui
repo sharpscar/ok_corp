@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>organization</class>
+ <widget class="QWidget" name="organization">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1090</width>
+    <height>840</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>organization</string>
+  </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>50</y>
+     <width>911</width>
+     <height>761</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="page">
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>460</y>
+       <width>88</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>등록</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>460</y>
+       <width>88</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>수정</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="geometry">
+      <rect>
+       <x>750</x>
+       <y>460</y>
+       <width>88</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>삭제</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>20</y>
+       <width>801</width>
+       <height>401</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_2"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

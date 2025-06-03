@@ -1,0 +1,12 @@
+{
+    "data": {
+        "e_date": "2025-06-17 11:20:00",
+        "event_detail": "한영키를 안눌렀구나",
+        "event_name": "tnwjddmsdjEo",
+        "org_name": "ok상사",
+        "organization_id": 1234,
+        "s_date": "2025-06-18 11:00:00",
+        "schedule_id": 18
+    },
+    "type": "req_event_update"
+}

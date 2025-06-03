@@ -1,0 +1,55 @@
+#회원가입에 관해 정리해보자
+
+
+회원은 가입시에 단체 리스트를 보고 자기가 속한 단체를 선택할수있다.
+단체리스트의 제일 하단에는 - 해당없음이 있으며 각 단체명 앞에는 라디오 단추로 하나만 선택할수 있다.
+
+회원
+
+     
+
+   
+
+등록 수정 삭제 
+
+
+
+| m_id            | varchar(100) | NO   | PRI | NULL    |       |
+| m_pass          | varchar(100) | YES  |     | NULL    |       |
+| sex             | varchar(10)  | YES  |     | NULL    |       |성별
+| phone           | varchar(100) | YES  |     | NULL    |       |전화번호
+| addr            | varchar(100) | YES  |     | NULL    |       |주소
+| job             | varchar(100) | YES  |     | NULL    |       |직장명
+| job_position    | varchar(100) | YES  |     | NULL    |       |직책
+| reg_date        | datetime     | YES  |     | NULL    |       |가입일자 - 
+| name            | varchar(100) | YES  |     | NULL    |       |이름
+| state                                                          상태
+| organization_id | int(11)      | YES  |     | NULL    |       |단체아이디 
+department_id       INT             YES         NULL             부서아이디 
+
+소속동\생년월일
+
+그럼 단체 테이블에 있는 소속동이라는 컬럼을 참조해야한다. 
+
+
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| organization_id   | int(11)      | NO   | PRI | NULL    | auto_increment |단체아이디
+| organization_name | varchar(100) | YES  |     | NULL    |                |단체명
+| president_name    | varchar(100) | YES  |     | NULL    |                |대표명
+| district          | varchar(100) | YES  |     | NULL    |                |소속동
+| dept_id           | int(11)      | YES  |     | NULL    |                |부서아이디
+| org_intro         | varchar(100) | YES  |     | NULL    |                |단체소개 
++-------------------+--------------+------+-----+---------+----------------+
+
+
+
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| department_id | int(11)      | NO   | PRI | NULL    | auto_increment | 부서 아이디
+| dept_num      | int(11)      | YES  |     | NULL    |                | 부서 
+| dept_name     | varchar(100) | YES  |     | NULL    |                |
+| authority     | varchar(100) | YES  |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+

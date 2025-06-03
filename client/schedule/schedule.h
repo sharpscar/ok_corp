@@ -23,8 +23,9 @@
 #include <json.hpp>
 #include <QMessageBox>
 
-#define FILE_PATH "/home/scar/ok_corp/client/schedule/json/"
-
+#define FILE_PATH "/home/scar/ok_corp/client/json/"
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 9957
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
