@@ -1,0 +1,9 @@
+{
+    "e_date": "2025-05-05",
+    "event_detail": "111",
+    "event_name": "ㅁㅁㅁ",
+    "event_organization": "ok상사",
+    "organization_id": 1234,
+    "s_date": "2025-05-15",
+    "type": "req_event_create"
+}
