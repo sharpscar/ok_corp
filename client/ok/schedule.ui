@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>742</width>
-    <height>553</height>
+    <width>902</width>
+    <height>688</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>-40</x>
-     <y>-50</y>
+     <x>60</x>
+     <y>-190</y>
      <width>821</width>
      <height>851</height>
     </rect>
@@ -25,22 +25,27 @@
    <property name="currentIndex">
     <number>0</number>
    </property>
-   <widget class="QWidget" name="page">
+   <widget class="QWidget" name="sch_page_1">
     <widget class="QTableWidget" name="tw_schedule">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>791</width>
-       <height>401</height>
+       <x>40</x>
+       <y>60</y>
+       <width>771</width>
+       <height>291</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <bold>false</bold>
+      </font>
      </property>
     </widget>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
-       <x>-10</x>
-       <y>440</y>
+       <x>370</x>
+       <y>380</y>
        <width>443</width>
        <height>413</height>
       </rect>
@@ -159,6 +164,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="insert_btn">
+          <property name="text">
+           <string> 입력</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QCheckBox" name="checkBox">
           <property name="text">
            <string/>
@@ -191,7 +203,7 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_2">
+   <widget class="QWidget" name="sch_page_2">
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>

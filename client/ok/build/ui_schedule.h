@@ -31,7 +31,7 @@ class Ui_Schedule
 {
 public:
     QStackedWidget *stackedWidget;
-    QWidget *page;
+    QWidget *sch_page_1;
     QTableWidget *tw_schedule;
     QGroupBox *groupBox_2;
     QVBoxLayout *verticalLayout_5;
@@ -58,11 +58,12 @@ public:
     QTextEdit *s_detail;
     QHBoxLayout *horizontalLayout_10;
     QLabel *label_15;
+    QPushButton *insert_btn;
     QCheckBox *checkBox;
     QPushButton *s_update_btn;
     QPushButton *cancel_btn;
     QPushButton *s_delete_btn;
-    QWidget *page_2;
+    QWidget *sch_page_2;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -91,18 +92,21 @@ public:
     {
         if (Schedule->objectName().isEmpty())
             Schedule->setObjectName("Schedule");
-        Schedule->resize(742, 553);
+        Schedule->resize(902, 688);
         stackedWidget = new QStackedWidget(Schedule);
         stackedWidget->setObjectName("stackedWidget");
-        stackedWidget->setGeometry(QRect(-40, -50, 821, 851));
-        page = new QWidget();
-        page->setObjectName("page");
-        tw_schedule = new QTableWidget(page);
+        stackedWidget->setGeometry(QRect(60, -190, 821, 851));
+        sch_page_1 = new QWidget();
+        sch_page_1->setObjectName("sch_page_1");
+        tw_schedule = new QTableWidget(sch_page_1);
         tw_schedule->setObjectName("tw_schedule");
-        tw_schedule->setGeometry(QRect(10, 20, 791, 401));
-        groupBox_2 = new QGroupBox(page);
+        tw_schedule->setGeometry(QRect(40, 60, 771, 291));
+        QFont font;
+        font.setBold(false);
+        tw_schedule->setFont(font);
+        groupBox_2 = new QGroupBox(sch_page_1);
         groupBox_2->setObjectName("groupBox_2");
-        groupBox_2->setGeometry(QRect(-10, 440, 443, 413));
+        groupBox_2->setGeometry(QRect(370, 380, 443, 413));
         verticalLayout_5 = new QVBoxLayout(groupBox_2);
         verticalLayout_5->setObjectName("verticalLayout_5");
         horizontalLayout_3 = new QHBoxLayout();
@@ -217,6 +221,11 @@ public:
 
         horizontalLayout_10->addWidget(label_15);
 
+        insert_btn = new QPushButton(groupBox_2);
+        insert_btn->setObjectName("insert_btn");
+
+        horizontalLayout_10->addWidget(insert_btn);
+
         checkBox = new QCheckBox(groupBox_2);
         checkBox->setObjectName("checkBox");
 
@@ -240,10 +249,10 @@ public:
 
         verticalLayout_5->addLayout(horizontalLayout_10);
 
-        stackedWidget->addWidget(page);
-        page_2 = new QWidget();
-        page_2->setObjectName("page_2");
-        groupBox = new QGroupBox(page_2);
+        stackedWidget->addWidget(sch_page_1);
+        sch_page_2 = new QWidget();
+        sch_page_2->setObjectName("sch_page_2");
+        groupBox = new QGroupBox(sch_page_2);
         groupBox->setObjectName("groupBox");
         groupBox->setGeometry(QRect(40, 350, 331, 151));
         verticalLayout_2 = new QVBoxLayout(groupBox);
@@ -303,19 +312,19 @@ public:
 
         verticalLayout_2->addWidget(reg_sch_btn);
 
-        verticalLayoutWidget_2 = new QWidget(page_2);
+        verticalLayoutWidget_2 = new QWidget(sch_page_2);
         verticalLayoutWidget_2->setObjectName("verticalLayoutWidget_2");
         verticalLayoutWidget_2->setGeometry(QRect(430, 80, 291, 221));
         verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget_2);
         verticalLayout_3->setObjectName("verticalLayout_3");
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-        verticalLayoutWidget = new QWidget(page_2);
+        verticalLayoutWidget = new QWidget(sch_page_2);
         verticalLayoutWidget->setObjectName("verticalLayoutWidget");
         verticalLayoutWidget->setGeometry(QRect(70, 80, 291, 221));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        verticalLayoutWidget_3 = new QWidget(page_2);
+        verticalLayoutWidget_3 = new QWidget(sch_page_2);
         verticalLayoutWidget_3->setObjectName("verticalLayoutWidget_3");
         verticalLayoutWidget_3->setGeometry(QRect(430, 350, 311, 241));
         verticalLayout_4 = new QVBoxLayout(verticalLayoutWidget_3);
@@ -341,7 +350,7 @@ public:
 
         verticalLayout_4->addWidget(event_info_le);
 
-        stackedWidget->addWidget(page_2);
+        stackedWidget->addWidget(sch_page_2);
 
         retranslateUi(Schedule);
 
@@ -364,6 +373,7 @@ public:
         label_13->setText(QCoreApplication::translate("Schedule", "\355\226\211\354\202\254\353\252\205", nullptr));
         label_14->setText(QCoreApplication::translate("Schedule", "\355\226\211\354\202\254 \354\203\201\354\204\270", nullptr));
         label_15->setText(QCoreApplication::translate("Schedule", "\352\263\265\352\260\234\354\227\254\353\266\200", nullptr));
+        insert_btn->setText(QCoreApplication::translate("Schedule", " \354\236\205\353\240\245", nullptr));
         checkBox->setText(QString());
         s_update_btn->setText(QCoreApplication::translate("Schedule", "\354\210\230\354\240\225", nullptr));
         cancel_btn->setText(QCoreApplication::translate("Schedule", "\354\267\250\354\206\214", nullptr));

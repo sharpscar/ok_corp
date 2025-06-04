@@ -55,15 +55,17 @@ Schedule::Schedule(QWidget *parent)
     connect(ui->s_update_btn, &QPushButton::clicked, this, &Schedule::update_schedule);
     connect(ui->s_delete_btn, &QPushButton::clicked, this, &Schedule::delete_schedule);
 
+    connect(ui->insert_btn, &QPushButton::clicked, this, [this](){
+        ui->stackedWidget->setCurrentIndex(0);
+
+    });
+
+
     ui->groupBox_2->hide();
 
-    /*
 
 
-    listWidget->addItem("행사 1: 수영 대회");
-    listWidget->addItem("행사 2: 독서 토론회");
 
-*/
 
 
 }

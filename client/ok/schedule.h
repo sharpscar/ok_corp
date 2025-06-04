@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 #define FILE_PATH "/home/scar/ok_corp/client/json/"
-#define SERVER_IP "10.10.20.101"
+#define SERVER_IP "localhost"            //"10.10.20.101"
 #define SERVER_PORT 9957
 
 QT_BEGIN_NAMESPACE
