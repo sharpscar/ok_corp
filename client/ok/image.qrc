@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/background_bottom.png</file>
+        <file>images/free-icon-male-and-female-9386781.png</file>
+        <file>images/free-icon-male-and-female-9386781 (사본).png</file>
+        <file>images/gwangsan.png</file>
+        <file>images/logo_gs_v2.png</file>
+        <file>images/logo_gwangsan.png</file>
+        <file>images/man.png</file>
+        <file>images/woman.png</file>
+        <file>images/gwangsan_logo.png</file>
+        <file>images/icon_bell.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>images/gwangsan_logo.png</file>
+    </qresource>
+</RCC>

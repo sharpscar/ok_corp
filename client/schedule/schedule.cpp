@@ -4,8 +4,7 @@
 #include <QListWidget>
 #include <QTableWidget>
 
-#define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 9957
+
 
 using json = nlohmann::json;
 
