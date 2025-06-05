@@ -3,6 +3,8 @@
 
 #include <json.hpp>
 
+using json = nlohmann::json;
+
 dept::dept(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::dept)
@@ -13,20 +15,114 @@ dept::dept(QWidget *parent)
     ui->per_combo->addItem("일반");               // 인덱스 0
     ui->per_combo->addItem("관리자");             // 인덱스 1
     ui->per_combo->addItem("슈퍼유저");           // 인덱스 2
-
     // ui->per_combo->setCurrentIndex(0);
-
     // 콤보박스가 변경되면 permission 변수를 할당
     connect(ui->per_combo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &dept::onPermissionComboBoxChanged);
 
     // this->req_dept_json_for_first_page();
     connect(ui->reg_dept_btn, &QPushButton::clicked, this, &dept::make_dept);
+
+    this->req_dept_json_for_deptList();
 }
 
 dept::~dept()
 {
     delete ui;
 }
+
+void dept::req_dept_json_for_deptList(){
+    json j;
+    j["type"] = "req_dept_read";
+    //json 문자열로 변환
+    QString jsonString = QString::fromStdString(j.dump(4));
+
+    QString filePath =QString(FILE_PATH)+"/read_dept.json";
+
+    QFile file(filePath);
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text)){
+        QTextStream out(&file);
+        out <<jsonString;
+        file.close();
+        qDebug()<<"JSON saved to" <<filePath;
+
+    }else{
+        qWarning()<<"Failed to save json to file";
+
+    }
+    this->send_json_to_server_to_read_deptList();
+    qDebug()<<"여기까지 왔나?";
+
+
+}
+
+void dept::send_json_to_server_to_read_deptList(){
+
+    QString path_ = QString(FILE_PATH)+"/read_dept.json";
+    // json 파일 읽기
+    std::ifstream file(path_.toStdString());
+    if(!file.is_open()){
+        std::cerr <<"파일을 열수 없습니다.\n";
+        exit(1);
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string jsonData = buffer.str();
+
+
+    //소켓 생성
+    int sock = socket(AF_INET, SOCK_STREAM,0);
+    if(sock<0){
+        perror("소캣 생성 실패!");
+        exit(1);
+    }
+
+    //서버 주소 설정
+    sockaddr_in serverAddr{};
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(SERVER_PORT);
+    inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);
+
+    //서버에 연결
+    if( ::connect(sock, (sockaddr*)&serverAddr, sizeof(serverAddr))<0){
+        perror("서버 연결 실패");
+        ::close(sock);
+        exit(1);
+    }
+
+    qDebug()<< jsonData ;
+
+    // json 데이터 전송
+    ssize_t sentBytes = send(sock, jsonData.c_str(), jsonData.size(), 0);
+    if(sentBytes<0){
+        perror("전송 실패");
+    }else{
+        std::cout<<"json 전송 완료 ("<<sentBytes<< "바이트\n";
+    }
+
+    // 전송후 응답 처리
+    std::string responseStr;
+
+    while(true){
+        char buffer_recv[4096] = {0};
+        ssize_t recvBytes = recv(sock, buffer_recv, sizeof(buffer_recv)-1,0); // -1은 널 문자 공간 확보용
+
+        if(recvBytes <0){
+            perror("서버응답 수신 실패");
+            break;
+
+        }else if(recvBytes ==0){
+            std::cerr <<"서버가 연결을 종료함 .\n";
+            break;
+        }
+        buffer_recv[recvBytes] = '\0';
+        responseStr +=buffer_recv;
+    }
+    std::cout << "서버응답 수신 완료: " <<responseStr <<std::endl;
+
+}
+
 void dept::make_dept(){
     /*
     QString dept_name;
@@ -44,7 +140,7 @@ void dept::make_dept(){
 
     nlohmann::json data;
     data["dept_name"] = dept_name.toStdString();
-    data["manager_name"] = manager_name.toStdString();
+    // data["manager_name"] = manager_name.toStdString();
     data["dept_name"] = dept_name.toStdString();
     data["dept_user_id"] = dept_id.toStdString();
     data["dept_user_pass"] = dept_pass.toStdString();
@@ -90,8 +186,6 @@ void dept::send_json_to_server_for_regist_dept(){
         perror("소캣 생성 실패!");
         exit(1);
     }
-
-
     //서버 주소 설정
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
@@ -104,15 +198,45 @@ void dept::send_json_to_server_for_regist_dept(){
         ::close(sock);
         exit(1);
     }
-
-
-
     // json 데이터 전송
     ssize_t sentBytes = send(sock, jsonData.c_str(), jsonData.size(), 0);
     if(sentBytes<0){
         perror("전송 실패");
     }else{
         std::cout<<"json 전송 완료 ("<<sentBytes<< "바이트\n";
+    }
+
+    std::string responseStr;
+
+    while(true){
+        char buffer_recv[4096] = {0};
+        ssize_t recvBytes = recv(sock, buffer_recv, sizeof(buffer_recv)-1,0); // -1은 널 문자 공간 확보용
+
+        if(recvBytes <0){
+            perror("서버응답 수신 실패");
+            break;
+
+        }else if(recvBytes ==0){
+            std::cerr <<"서버가 연결을 종료함 .\n";
+            break;
+        }
+        buffer_recv[recvBytes] = '\0';
+        responseStr +=buffer_recv;
+
+    }
+    std::cout << "서버응답 수신 완료: " <<responseStr <<std::endl;
+
+    try{
+        // 추후 부서 등록후 서버로부터 온 응답으로 뭘할지 고민!
+        json response_json = json::parse(responseStr);
+        std::cout<< "파싱된 json 응답 : \n" << response_json.dump(4) << std::endl;
+
+
+        // ui->res_le->setText(QString::fromStdString(response_json[0]["message"]));
+
+        //listing을 새로고침하는게?
+    }catch(json::parse_error& e){
+        std::cerr<<"json 파싱오류: "<< e.what() << std::endl;
     }
     ::close(sock);
 

@@ -52,6 +52,7 @@ Schedule::Schedule(QWidget *parent)
 
     //서버에 json 생성후 요청을 보낸다.
     this->req_event_json_for_first_page();
+
     connect(ui->tw_schedule, &QTableWidget::cellClicked, this, &Schedule::onTableItemClicked);
     connect(ui->s_update_btn, &QPushButton::clicked, this, &Schedule::update_schedule);
     connect(ui->s_delete_btn, &QPushButton::clicked, this, &Schedule::delete_schedule);
@@ -424,6 +425,7 @@ void Schedule::send_json_to_server_for_read_schedule(){
 }
 
 void Schedule::send_json_to_server(){
+
     QString path_ = QString(FILE_PATH)+"/make_schedule.json";
 
     // json 파일 읽기
@@ -433,6 +435,7 @@ void Schedule::send_json_to_server(){
         exit(1);
 
     }
+
     std::stringstream buffer;
     buffer << file.rdbuf();
     std::string jsonData = buffer.str();
@@ -443,7 +446,6 @@ void Schedule::send_json_to_server(){
         perror("소캣 생성 실패!");
         exit(1);
     }
-
     //서버 주소 설정
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;

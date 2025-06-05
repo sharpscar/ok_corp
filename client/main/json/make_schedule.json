@@ -1,6 +1,12 @@
 {
     "data": {
-        "schedule_id": 27
+        "e_date": "2025-06-04 17:00:00",
+        "event_detail": "하하하하",
+        "event_name": "하하하",
+        "org_name": "우리 단체 ",
+        "organization_id": 1234,
+        "s_date": "2025-06-03 15:00:00",
+        "schedule_id": 20
     },
-    "type": "req_event_delete"
+    "type": "req_event_update"
 }

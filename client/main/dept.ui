@@ -23,12 +23,12 @@
     </rect>
    </property>
    <widget class="QWidget" name="page">
-    <widget class="QTableWidget" name="tableWidget">
+    <widget class="QTableWidget" name="tw_dept">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>861</width>
+       <width>871</width>
        <height>271</height>
       </rect>
      </property>
@@ -149,6 +149,9 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="res_le"/>
       </item>
      </layout>
     </widget>

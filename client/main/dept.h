@@ -31,7 +31,8 @@ public:
     void send_json_to_server_for_regist_dept();
 private:
     Ui::dept *ui;
-    void req_dept_json_for_first_page();
+    void req_dept_json_for_deptList();
+    void send_json_to_server_to_read_deptList();
 
     QString dept_name;
     QString manager_name;

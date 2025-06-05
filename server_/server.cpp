@@ -8,23 +8,18 @@
 #include "./json.hpp"
 #include <thread>
 
-
-
-
 #include <iostream>
 #include <string>
 #include <stdexcept> // std::runtime_error 등을 위해
 #include <memory>    // std::unique_ptr을 위해
 #include <mariadb/conncpp.hpp> 
-
-
 using json = nlohmann::json;
 using namespace std;
 
-const char* HOST = "10.10.20.116";
-const char* USER = "scar";
+const char* HOST = "10.10.20.101";
+const char* USER = "db3";
 const char* PASS = "1234";
-const char* DB   = "scar_db";
+const char* DB   = "db3";
 
 constexpr int PORT = 9957;
 constexpr int BUFFER_SIZE = 1024;
@@ -35,6 +30,7 @@ json handle_read_schedule();
 json handle_update_schedule(const json& data);
 json handle_delete_schedule(const json& data);
 json handle_make_dept(const json& data);
+json handle_read_dept(const json& data);
 
 MYSQL* connect_db() {
     MYSQL* conn = mysql_init(nullptr);
@@ -47,7 +43,7 @@ MYSQL* connect_db() {
 }
 
 json handle_make_dept(const json& data){
-    sqlQuery query;
+
     json result;
     
     
@@ -71,18 +67,12 @@ json handle_make_dept(const json& data){
         return result;
     }
     
-    
-
-    // Prepared Statement 작성: 값 대신 ? (또는 :name) 플레이스홀더 사용
-    query.prepare("INSERT INTO dept (login_id, login_pw, dept_name, manager_name, permission) "
-                  "VALUES (:login_id, :login_pw, :dept_name, :manager_name, :permission)");
-    
-    // 각 플레이스홀더에 값을 바인딩
-    query.bindValue(":login_id", dept_user_id);
-    query.bindValue(":login_pw", dept_user_pass);
-    query.bindValue(":dept_name", dept_name);
-    query.bindValue(":manager_name", manager_name);
-    query.bindValue(":permission", permission); // int 타입은 그대로 바인딩 가능
+    string query = "INSERT INTO dept (login_id, login_pw, dept_name, manager_name, permission_level) VALUES ('" 
+    + dept_user_id      + "', '" 
+    + dept_user_pass    + "', '" 
+    + dept_name         + "', '" 
+    + manager_name      + "', '"   
+    + std::to_string(permission)+"')";
 
     cout << query << endl;
 
@@ -98,6 +88,52 @@ json handle_make_dept(const json& data){
 
     mysql_close(conn);
     return result;
+
+}
+
+json handle_read_dept(const json& data){
+
+    MYSQL* conn = connect_db();
+    
+    if (conn == nullptr) {
+       cout<< "db 커넥션 오류 >>line 91";
+    }
+
+    string query = "select dept_name, manager_name, permission_level, login_id, dept_id from dept;";
+
+    if(mysql_query(conn, query.c_str())!=0){
+        cerr << "쿼리 실패: " <<mysql_error(conn) << endl;
+        exit(1);
+    }
+
+    MYSQL_RES* result = mysql_store_result(conn);
+
+    if(!result){
+        cerr <<"결과 없음 또는 에러 : " << mysql_error(conn) << endl;
+        exit(1);
+    }
+
+    int num_fields= mysql_num_fields(result);
+
+    json json_result = json::array(); //전체 결과를 배열로
+
+    MYSQL_ROW row;
+    while((row = mysql_fetch_row(result))){
+        json data;
+        data["dept_name"] = row[0] ? row[0] : "";
+        // data["manager_name"] = row[1] ? row[1]:"";
+        data["permission_level"] = row[2] ? atoi(row[2]) : 0;
+        data["login_id"] = row[3] ? row[3] : "";
+        data["dept_id"] = row[4] ? atoi(row[4]) : 0;
+
+        json_result.push_back(data);
+
+    }
+    mysql_free_result(result);
+
+    mysql_close(conn);
+    
+    return json_result;
 
 }
 
@@ -144,6 +180,8 @@ void handle_client(int client_socket){
                 response = handle_delete_schedule(data);
             }else if(type_ == "req_dept_create"){
                 response = handle_make_dept(data);               
+            }else if(type_ == "req_dept_read"){
+                response = handle_read_dept(data);
             }
 
 
