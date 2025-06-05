@@ -20,8 +20,10 @@
 #include <cstring>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <json.hpp>
 #include <QMessageBox>
+#include <json.hpp>
+
+#include <json.hpp>
 
 #define FILE_PATH "/home/scar/ok_corp/client/main/json"
 #define SERVER_IP "127.0.0.1"

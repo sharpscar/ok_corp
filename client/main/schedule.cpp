@@ -4,8 +4,9 @@
 #include <QListWidget>
 #include <QTableWidget>
 
-#define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 9957
+
+// #define SERVER_IP "127.0.0.1"
+// #define SERVER_PORT 9957
 
 using json = nlohmann::json;
 
@@ -29,6 +30,9 @@ Schedule::Schedule(QWidget *parent)
 
     ui->s_date_edit->setCalendarPopup(true);
     ui->e_date_edit->setCalendarPopup(true);
+
+
+
 
 }
 void Schedule::delete_schedule(){
@@ -300,69 +304,7 @@ void Schedule::make_schedule(){
     }
     ui->groupBox_2->hide();
 
-    //리스팅 새로고침
 
-    // json생성
-    // s_date = ui->s_day_le->text();
-    // QDate Qs_date = QDate::fromString(s_date,"yyyy-MM-dd");
-    // e_date = ui->e_day_le->text();
-    // QDate Qe_date = QDate::fromString(e_date,"yyyy-MM-dd");
-
-    // QString s_time = ui->s_timeEdit->text();
-    // QString e_time = ui->e_timeEdit->text();
-    // QTime Qs_time = QTime::fromString(s_time, "HH:mm:ss");
-    // QTime Qe_time = QTime::fromString(e_time, "HH:mm:ss");
-
-    // QDateTime s_datetime;
-    // s_datetime.setDate(Qs_date);
-    // s_datetime.setTime(Qs_time);
-
-    // qDebug()<<"265: "<< s_datetime.toString();
-
-    // QDateTime e_datetime;
-    // e_datetime.setDate(Qe_date);
-    // e_datetime.setTime(Qe_time);
-
-    // event_name = ui->event_name_le->text();
-    // event_detail = ui->event_info_le->toPlainText();
-
-    // //임의 데이터
-    // org_name = "ok상사";
-    // organization_id = 1234;
-
-    // json j;
-    // j["type"]= "req_event_create";
-
-    // // 여기서 시작일시 , 종료일시를 시간 값을 가져와서  합쳐서 넣어야 한다!
-    // json data;
-    // data["s_date"] = s_datetime.toString("yyyy-MM-dd HH:mm:ss").toStdString();
-    // data["e_date"] = e_datetime.toString("yyyy-MM-dd HH:mm:ss").toStdString();
-
-    // data["event_name"] = event_name.toStdString();
-    // data["event_organization"] = org_name.toStdString();
-    // data["organization_id"]= organization_id;
-    // data["event_detail"]=event_detail.toStdString();
-
-    // j["data"] = data;
-    // //json 문자열로 변환
-    // QString jsonString = QString::fromStdString(j.dump(4));
-
-    // QString filePath =QString(FILE_PATH)+"/make_schedule.json";
-
-    // QFile file(filePath);
-
-
-
-    // if(file.open(QIODevice::WriteOnly|QIODevice::Text)){
-    //     QTextStream out(&file);
-    //     out <<jsonString;
-    //     file.close();
-    //     qDebug()<<"JSON saved to" <<filePath;
-
-    // }else{
-    //     qWarning()<<"Failed to save json to file";
-
-    // }
 
     this->send_json_to_server();
 
@@ -478,6 +420,8 @@ void Schedule::send_json_to_server_for_read_schedule(){
     }
     ::close(sock);
 }
+
+
 
 void Schedule::send_json_to_server(){
     QString path_ = QString(FILE_PATH)+"/make_schedule.json";

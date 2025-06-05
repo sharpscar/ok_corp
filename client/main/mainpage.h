@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include "schedule.h"
+#include "dept.h"
+
+#include <QWidget>
+#include <QStackedWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,10 +21,13 @@ class MainPage : public QMainWindow
 public:
     MainPage(QWidget *parent = nullptr);
     ~MainPage();
-     void changeSchedulePage();
+    void initializeStackedWidget();
+    void change_to_SchedulePage();
+    void change_to_Dept_Page();
 
 private:
     Ui::MainPage *ui;
     Schedule *schedulePage; // 스케줄 페이지 인스턴스 선언
+    dept *deptPage;
 };
 #endif // MAINPAGE_H

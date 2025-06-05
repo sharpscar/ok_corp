@@ -8,6 +8,16 @@
 #include "./json.hpp"
 #include <thread>
 
+
+
+
+#include <iostream>
+#include <string>
+#include <stdexcept> // std::runtime_error 등을 위해
+#include <memory>    // std::unique_ptr을 위해
+#include <mariadb/conncpp.hpp> 
+
+
 using json = nlohmann::json;
 using namespace std;
 
@@ -24,6 +34,7 @@ json handle_make_schedule(const json& data);
 json handle_read_schedule();
 json handle_update_schedule(const json& data);
 json handle_delete_schedule(const json& data);
+json handle_make_dept(const json& data);
 
 MYSQL* connect_db() {
     MYSQL* conn = mysql_init(nullptr);
@@ -33,6 +44,61 @@ MYSQL* connect_db() {
     }
     cout << "DB 연결 성공" << endl;
     return conn;
+}
+
+json handle_make_dept(const json& data){
+    sqlQuery query;
+    json result;
+    
+    
+    if (!data.contains("dept_user_id") || !data.contains("dept_user_pass") || !data.contains("dept_name")|| !data.contains("manager_name")|| !data.contains("permission")) {
+        result["status"] = "error";
+        result["message"]= "필수 필드 누락";
+        return result;
+    }
+
+    //삼항연산자로 존재하는지 확인후 담는다
+    string dept_user_id = data.contains("dept_user_id")? data["dept_user_id"].get<string>() : "";
+    string dept_user_pass =  data.contains("dept_user_pass")? data["dept_user_pass"].get<string>() : "";
+    string dept_name =  data.contains("dept_name")? data["dept_name"].get<string>() : "";    
+    string manager_name =  data.contains("manager_name")? data["manager_name"].get<string>() : "";    
+    int permission =  data.contains("permission")? data["permission"].get<int>() : 0;    
+
+    MYSQL* conn = connect_db();
+    if (conn == nullptr) {
+        result["status"] = "error";
+        result["message"] = "DB 연결 실패";
+        return result;
+    }
+    
+    
+
+    // Prepared Statement 작성: 값 대신 ? (또는 :name) 플레이스홀더 사용
+    query.prepare("INSERT INTO dept (login_id, login_pw, dept_name, manager_name, permission) "
+                  "VALUES (:login_id, :login_pw, :dept_name, :manager_name, :permission)");
+    
+    // 각 플레이스홀더에 값을 바인딩
+    query.bindValue(":login_id", dept_user_id);
+    query.bindValue(":login_pw", dept_user_pass);
+    query.bindValue(":dept_name", dept_name);
+    query.bindValue(":manager_name", manager_name);
+    query.bindValue(":permission", permission); // int 타입은 그대로 바인딩 가능
+
+    cout << query << endl;
+
+    if(mysql_query(conn, query.c_str())!=0){
+        cerr << "쿼리 실패: " << mysql_error(conn) <<endl;
+        result["status"]= "error";
+        result["message"] = "DB 쿼리 실패: " +string(mysql_error(conn));
+        mysql_close(conn);
+        return result;
+    }
+    result["status"] = "success";
+    result["message"] = "부서등록에 성공하였습니다.";
+
+    mysql_close(conn);
+    return result;
+
 }
 
 void handle_client(int client_socket){
@@ -76,6 +142,8 @@ void handle_client(int client_socket){
                 response = handle_update_schedule(data);
             }else if(type_ == "req_event_delete") {
                 response = handle_delete_schedule(data);
+            }else if(type_ == "req_dept_create"){
+                response = handle_make_dept(data);               
             }
 
 
@@ -187,7 +255,7 @@ json handle_make_schedule(const json& data){
     + event_organization + "', '"  
     + event_detail+ "')";
 
-    cout << query << endl;
+    // cout << query << endl;
 
     if(mysql_query(conn, query.c_str())!=0){
         cerr << "쿼리 실패: " << mysql_error(conn) <<endl;

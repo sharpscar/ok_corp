@@ -1,0 +1,10 @@
+{
+    "data": {
+        "dept_name": "경제교통과",
+        "dept_user_id": "hanse",
+        "dept_user_pass": "won1234",
+        "manager_name": "한세원",
+        "permission": 1
+    },
+    "type": "req_dept_create"
+}

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1130</width>
-    <height>836</height>
+    <height>861</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@
              </size>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>행사관리</string>
             </property>
            </widget>
           </item>
@@ -202,7 +202,7 @@
              </size>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>부서관리</string>
             </property>
            </widget>
           </item>
