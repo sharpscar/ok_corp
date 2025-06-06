@@ -49,18 +49,18 @@ void Schedule::delete_schedule(){
 
     if(reply == QMessageBox::Yes){
         //삭제수행!
-        performDelete(schedule_id);
+        performDelete(event_id);
     }
 
 }
-void Schedule::performDelete(int schedule_id){
+void Schedule::performDelete(int event_id){
 
     //삭제 json 생성
     json j,data;
 
     j["type"] = "req_event_delete";
 
-    data["schedule_id"] = schedule_id;
+    data["EVENT_ID"] = event_id;
     j["data"] = data;
 
     QString jsonString = QString::fromStdString(j.dump(4));
@@ -97,13 +97,14 @@ void Schedule::update_schedule(){
 
     json data;
 
-    if(!schedule_id)
+    if(!event_id)
     {
         qDebug()<< "선택된 행의 행사 id값이 선택되지 않았습니다. 테이블 위젯을 클릭해야 설정됩니다.";
     }
 
-    data["schedule_id"] = schedule_id;
-    data["org_name"] = ui->le_org->text().toStdString();
+    data["EVENT_ID"] = event_id;
+    //단체명
+    // data["org_name"] = ui->le_org->text().toStdString();
 
     //시작일처리
     QDate s_date_ =  ui->s_date_edit->date();
@@ -114,15 +115,19 @@ void Schedule::update_schedule(){
     QTime e_time_ = ui->e_time_edit->time();
     QDateTime e_datetime_(e_date_, e_time_);
 
-    data["s_date"] = s_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
-    data["e_date"] = e_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+    data["START_DATE"] = s_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+    data["END_DATE"] = e_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+
+
+
 
 
     //담당자 , 담당자 연락처 또한 업데이트 되면 좋겠지만 그건 단체관리에서 하는게 좀더 정확하다.여기서는 행사만 관리한다.
-    data["event_name"] = ui->s_name->text().toStdString();
+    data["EVENT_NAME"] = ui->s_name->text().toStdString();
     // data["organization_id"]  단체 아이디 << 이것 또한 임의로 설정한다.
-    data["organization_id"] = 1234;
-    data["event_detail"] = ui->s_detail->toPlainText().toStdString();
+    data["GROUP_ID"] = 1234;
+    data["DEPT_ID"] = 1234;
+    data["DESCRIPTION"] = ui->s_detail->toPlainText().toStdString();
 
     j["data"] = data;
     //json 문자열로 변환
@@ -203,9 +208,9 @@ void Schedule::onTableItemClicked(int row, int column){
 
     QTableWidgetItem* idItem = ui->tw_schedule->item(row, 6);
     if(idItem){
-        schedule_id = idItem->text().toInt();
+        event_id = idItem->text().toInt();
     }
-    qDebug()<<"선택된 아이디: "<<schedule_id;
+    qDebug()<<"선택된 아이디: "<<event_id;
 }
 
 void Schedule::req_event_json_for_first_page(){
@@ -262,7 +267,7 @@ void Schedule::make_schedule(){
     j["type"] = "req_event_create";
 
     json data;
-    data["org_name"] = ui->le_org->text().toStdString();
+    // data["org_name"] = ui->le_org->text().toStdString();
 
     //시작일처리
     QDate s_date_ =  ui->s_date_edit->date();
@@ -273,14 +278,17 @@ void Schedule::make_schedule(){
     QTime e_time_ = ui->e_time_edit->time();
     QDateTime e_datetime_(e_date_, e_time_);
 
-    data["s_date"] = s_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
-    data["e_date"] = e_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+
+
+    data["START_DATE"] = s_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
+    data["END_DATE"] = e_datetime_.toString("yyyy-MM-dd HH:mm:ss").toStdString();
 
     //담당자 , 담당자 연락처 또한 업데이트 되면 좋겠지만 그건 단체관리에서 하는게 좀더 정확하다.여기서는 행사만 관리한다.
-    data["event_name"] = ui->s_name->text().toStdString();
+    data["EVENT_NAME"] = ui->s_name->text().toStdString();
+    data["DESCRIPTION"] = ui->s_detail->toPlainText().toStdString();
     // data["organization_id"]  단체 아이디 << 행사 리스트 가져올때 단체리스트를 가져와서 셀렉트 박스에 넣어두는게 좋겠다.
-    data["organization_id"] = 1234;
-    data["event_detail"] = ui->s_detail->toPlainText().toStdString();
+    data["GROUP_ID"] = 1234;
+    data["DEPT_ID"] = 1234;
 
     j["data"] = data;
     //json 문자열로 변환
@@ -388,7 +396,7 @@ void Schedule::send_json_to_server_for_read_schedule(){
         table->setColumnCount(7);
         table->setHorizontalHeaderLabels({
             // "ID", "시작일시", "종료일시", "이름", "단체ID", "단체명", "행사상세 내용"
-            "단체명","행사명","행사 상세 내용","시작일시","종료일시","단체_id","id"
+            "그룹아이디","행사명","행사 상세 내용","시작일시","종료일시","단체_id","id"
         });
 
         // std::string jsonStr = response_json;    //  이줄에서 난 오류 response_json이게 JSON 객체 혹은 배열인데 이걸 또 문자열로 직접 변환하려고 해서 난 오류이다.
@@ -400,13 +408,13 @@ void Schedule::send_json_to_server_for_read_schedule(){
         for(auto i=0u; i < response_json.size(); ++i){
             const auto& item = response_json[i];
 
-            table->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(item["event_organization"])));
-            table->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(item["s_name"])));
-            table->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(item["event_detail"])));
-            table->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(item["s_start_date"])));
-            table->setItem(i, 4, new QTableWidgetItem(QString::fromStdString(item["s_end_date"])));
-            table->setItem(i, 5, new QTableWidgetItem(QString::number(static_cast<int>(item["organization_id"]) )));
-            table->setItem(i, 6, new QTableWidgetItem(QString::number(static_cast<int>(item["schedule_id"]) )));
+            table->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(item["GROUP_ID"]))));
+            table->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(item["EVENT_NAME"])));
+            table->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(item["DESCRIPTION"])));
+            table->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(item["START_DATE"])));
+            table->setItem(i, 4, new QTableWidgetItem(QString::fromStdString(item["END_DATE"])));
+            table->setItem(i, 5, new QTableWidgetItem(QString::number(static_cast<int>(item["GROUP_ID"]))));
+            table->setItem(i, 6, new QTableWidgetItem(QString::number(static_cast<int>(item["EVENT_ID"]) )));
 
         }
 
@@ -424,7 +432,10 @@ void Schedule::send_json_to_server_for_read_schedule(){
 
 
 void Schedule::send_json_to_server(){
+
     QString path_ = QString(FILE_PATH)+"/make_schedule.json";
+
+    qDebug()<<"전송전 어디로 보내는지? "<< path_;
 
     // json 파일 읽기
     std::ifstream file(path_.toStdString());

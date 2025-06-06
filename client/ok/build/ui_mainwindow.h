@@ -45,7 +45,6 @@ public:
     QPushButton *pushButton_6;
     QPushButton *pushButton_7;
     QPushButton *pushButton_8;
-    QGroupBox *groupBox_3;
     QGroupBox *groupBox_4;
     QStackedWidget *stackedWidget;
     QWidget *page;
@@ -74,6 +73,7 @@ public:
     QLineEdit *event_name_le;
     QLabel *label_18;
     QTextEdit *event_info_le;
+    QGroupBox *groupBox_3;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -92,7 +92,7 @@ public:
         centralwidget->setObjectName("centralwidget");
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName("groupBox");
-        groupBox->setGeometry(QRect(-10, -10, 941, 91));
+        groupBox->setGeometry(QRect(-10, -10, 961, 51));
         groupBox->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 80, 153);\n"
 ""));
         label = new QLabel(groupBox);
@@ -284,20 +284,9 @@ public:
 "    background-color: #002147;\n"
 "}\n"
 ""));
-        groupBox_3 = new QGroupBox(centralwidget);
-        groupBox_3->setObjectName("groupBox_3");
-        groupBox_3->setGeometry(QRect(-10, 590, 941, 111));
-        groupBox_3->setStyleSheet(QString::fromUtf8("border-image: url(:/images/images/background_bottom.png);\n"
-"background: qlineargradient(\n"
-"    x1: 0, y1: 0,\n"
-"    x2: 1, y2: 0,\n"
-"    stop: 0 #002147,\n"
-"    stop: 1 #004080\n"
-");\n"
-""));
-        groupBox_4 = new QGroupBox(centralwidget);
+        groupBox_4 = new QGroupBox(groupBox_2);
         groupBox_4->setObjectName("groupBox_4");
-        groupBox_4->setGeometry(QRect(170, 80, 761, 511));
+        groupBox_4->setGeometry(QRect(190, 20, 761, 511));
         stackedWidget = new QStackedWidget(groupBox_4);
         stackedWidget->setObjectName("stackedWidget");
         stackedWidget->setGeometry(QRect(20, -40, 741, 629));
@@ -408,11 +397,21 @@ public:
         verticalLayout_4->addWidget(event_info_le);
 
         stackedWidget->addWidget(page_2);
+        groupBox_3 = new QGroupBox(centralwidget);
+        groupBox_3->setObjectName("groupBox_3");
+        groupBox_3->setGeometry(QRect(0, 680, 941, 111));
+        groupBox_3->setStyleSheet(QString::fromUtf8("border-image: url(:/images/images/background_bottom.png);\n"
+"background: qlineargradient(\n"
+"    x1: 0, y1: 0,\n"
+"    x2: 1, y2: 0,\n"
+"    stop: 0 #002147,\n"
+"    stop: 1 #004080\n"
+");\n"
+""));
         MainWindow->setCentralWidget(centralwidget);
         groupBox_2->raise();
         groupBox->raise();
         groupBox_3->raise();
-        groupBox_4->raise();
 
         retranslateUi(MainWindow);
 
@@ -439,7 +438,6 @@ public:
         pushButton_6->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
         pushButton_7->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
         pushButton_8->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
-        groupBox_3->setTitle(QString());
         groupBox_4->setTitle(QString());
         groupBox_6->setTitle(QCoreApplication::translate("MainWindow", "GroupBox", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\354\213\234\354\236\221\354\235\274", nullptr));
@@ -449,6 +447,7 @@ public:
         reg_sch_btn->setText(QCoreApplication::translate("MainWindow", "\354\235\274\354\240\225\353\223\261\353\241\235", nullptr));
         label_17->setText(QCoreApplication::translate("MainWindow", "\355\226\211\354\202\254 \354\240\234\353\252\251", nullptr));
         label_18->setText(QCoreApplication::translate("MainWindow", "\355\226\211\354\202\254 \352\260\234\354\232\224", nullptr));
+        groupBox_3->setTitle(QString());
     } // retranslateUi
 
 };

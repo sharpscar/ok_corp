@@ -1,10 +1,6 @@
 {
     "data": {
-        "dept_name": "김밥부서",
-        "dept_user_id": "kimbab",
-        "dept_user_pass": "kimbab123",
-        "manager_name": "김김밥",
-        "permission": 1
+        "DEPT_ID": 34
     },
-    "type": "req_dept_create"
+    "type": "req_dept_delete"
 }

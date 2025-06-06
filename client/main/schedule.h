@@ -55,7 +55,7 @@ private:
     QString org_name;             //행사단체
     int organization_id;                     //단체아이디
     QString event_detail;                   //행사 상세 (개요)
-    int schedule_id;
+    int event_id;
     Ui::Schedule *ui;
 
     void make_schedule();

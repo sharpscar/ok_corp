@@ -1,12 +1,12 @@
 {
     "data": {
-        "e_date": "2025-06-04 17:00:00",
-        "event_detail": "하하하하",
-        "event_name": "하하하",
-        "org_name": "우리 단체 ",
-        "organization_id": 1234,
-        "s_date": "2025-06-03 15:00:00",
-        "schedule_id": 20
+        "DEPT_ID": 1234,
+        "DESCRIPTION": "월곡동 나가\n월곡동 들어가",
+        "END_DATE": "2025-05-05 13:00:00",
+        "EVENT_ID": 268,
+        "EVENT_NAME": "월곡1동 새마을부녀회 월례회의",
+        "GROUP_ID": 1234,
+        "START_DATE": "2025-05-05 09:00:00"
     },
     "type": "req_event_update"
 }

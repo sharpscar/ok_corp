@@ -1,6 +1,7 @@
 #ifndef DEPT_H
 #define DEPT_H
 
+#include <QTableWidget>
 #include <QWidget>
 
 #include <arpa/inet.h>
@@ -9,7 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
-
+#include <QMessageBox>
 namespace Ui {
 class dept;
 }
@@ -29,17 +30,20 @@ public:
     ~dept();
     void make_dept();
     void send_json_to_server_for_regist_dept();
+    void onTableItemClicked(int row, int column);
+    void update_dept();
+    void make_req_json_for_deptList();
+    void send_json_to_server_to_read_deptList();
+    void delete_dept();
+    void performDelete(int);
 private:
     Ui::dept *ui;
-    void req_dept_json_for_deptList();
-    void send_json_to_server_to_read_deptList();
 
     QString dept_name;
-    QString manager_name;
     int permission;
-    QString dept_id;
-    QString dept_pass;
-
+    int dept_id;
+    QString dept_login_id;
+    QString dept_login_pass;
 
 
 

@@ -16,10 +16,10 @@
 using json = nlohmann::json;
 using namespace std;
 
-const char* HOST = "10.10.20.101";
-const char* USER = "db3";
-const char* PASS = "1234";
-const char* DB   = "db3";
+const char* HOST = "localhost";
+const char* USER = "root";
+const char* PASS = "1111";
+const char* DB   = "SOCIAL";
 
 constexpr int PORT = 9957;
 constexpr int BUFFER_SIZE = 1024;
@@ -31,6 +31,8 @@ json handle_update_schedule(const json& data);
 json handle_delete_schedule(const json& data);
 json handle_make_dept(const json& data);
 json handle_read_dept(const json& data);
+json handle_update_dept(const json& data);
+json handle_delete_dept(const json& data);
 
 MYSQL* connect_db() {
     MYSQL* conn = mysql_init(nullptr);
@@ -42,23 +44,67 @@ MYSQL* connect_db() {
     return conn;
 }
 
-json handle_make_dept(const json& data){
-
+json handle_update_dept(const json& data)
+{
     json result;
-    
-    
-    if (!data.contains("dept_user_id") || !data.contains("dept_user_pass") || !data.contains("dept_name")|| !data.contains("manager_name")|| !data.contains("permission")) {
+
+    if (!data.contains("DEPT_ID") ) {
         result["status"] = "error";
         result["message"]= "필수 필드 누락";
         return result;
     }
 
+    std::cout<< data <<endl;
+
+       //삼항연산자로 존재하는지 확인후 담는다
+       string login_id =    data.contains("LOGIN_ID")? data["LOGIN_ID"].get<string>() : "";
+       string login_pw =    data.contains("LOGIN_PW")? data["LOGIN_PW"].get<string>() : "";
+       string dept_name =   data.contains("DEPT_NAME")? data["DEPT_NAME"].get<string>() : "";     
+       int dept_id =        data.contains("DEPT_ID")? data["DEPT_ID"].get<int>() : 0;    
+       int per_lv =         data.contains("PERMISSION_LEVEL") ? data["PERMISSION_LEVEL"].get<int>():0;
+
+       MYSQL* conn = connect_db();
+       if (conn == nullptr) {
+           result["status"] = "error";
+           result["message"] = "DB 연결 실패";
+           return result;
+       }
+
+       string query = "UPDATE DEPT SET "
+       "LOGIN_ID = '" + login_id + "', "
+       "LOGIN_PW = '" + login_pw + "', "
+       "DEPT_NAME = '" + dept_name + "', "
+       "PERMISSION_LEVEL = "+ to_string(per_lv) + " "
+       "WHERE DEPT_ID = " + to_string(dept_id);
+
+       cout << query << endl;
+
+       if(mysql_query(conn, query.c_str())!=0){
+            cerr << "쿼리 실패: " << mysql_error(conn) <<endl;
+            result["status"]= "error";
+            result["message"] = "DB 쿼리 실패: " +string(mysql_error(conn));
+            mysql_close(conn);
+            return result;
+        }
+
+        result["status"] = "success";
+        result["message"] = "부서정보가 잘 수정 되었습니다..";    
+        mysql_close(conn);    
+        return result;  
+
+}
+json handle_make_dept(const json& data){
+    json result;
+    if (!data.contains("LOGIN_ID") || !data.contains("LOGIN_PW") || !data.contains("DEPT_NAME")|| !data.contains("PERMISSION_LEVEL")) {
+        result["status"] = "error";
+        result["message"]= "필수 필드 누락";
+        return result;
+    }
     //삼항연산자로 존재하는지 확인후 담는다
-    string dept_user_id = data.contains("dept_user_id")? data["dept_user_id"].get<string>() : "";
-    string dept_user_pass =  data.contains("dept_user_pass")? data["dept_user_pass"].get<string>() : "";
-    string dept_name =  data.contains("dept_name")? data["dept_name"].get<string>() : "";    
-    string manager_name =  data.contains("manager_name")? data["manager_name"].get<string>() : "";    
-    int permission =  data.contains("permission")? data["permission"].get<int>() : 0;    
+    string login_id = data.contains("LOGIN_ID")? data["LOGIN_ID"].get<string>() : "";
+    string login_pw =  data.contains("LOGIN_PW")? data["LOGIN_PW"].get<string>() : "";
+    string dept_name =  data.contains("DEPT_NAME")? data["DEPT_NAME"].get<string>() : "";        
+    int per_lv =  data.contains("PERMISSION_LEVEL")? data["PERMISSION_LEVEL"].get<int>() : 0;    
 
     MYSQL* conn = connect_db();
     if (conn == nullptr) {
@@ -67,12 +113,11 @@ json handle_make_dept(const json& data){
         return result;
     }
     
-    string query = "INSERT INTO dept (login_id, login_pw, dept_name, manager_name, permission_level) VALUES ('" 
-    + dept_user_id      + "', '" 
-    + dept_user_pass    + "', '" 
-    + dept_name         + "', '" 
-    + manager_name      + "', '"   
-    + std::to_string(permission)+"')";
+    string query = "INSERT INTO DEPT (LOGIN_ID, LOGIN_PW, DEPT_NAME, PERMISSION_LEVEL) VALUES ('" 
+    + login_id      + "', '" 
+    + login_pw    + "', '" 
+    + dept_name         + "', '"        
+    + std::to_string(per_lv)+"')";
 
     cout << query << endl;
 
@@ -99,8 +144,9 @@ json handle_read_dept(const json& data){
        cout<< "db 커넥션 오류 >>line 91";
     }
 
-    string query = "select dept_name, manager_name, permission_level, login_id, dept_id from dept;";
+    string query = "SELECT DEPT_ID,PERMISSION_LEVEL,LOGIN_ID,DEPT_NAME from DEPT;";
 
+    // std::cout << "이얏호!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<query;    
     if(mysql_query(conn, query.c_str())!=0){
         cerr << "쿼리 실패: " <<mysql_error(conn) << endl;
         exit(1);
@@ -120,11 +166,12 @@ json handle_read_dept(const json& data){
     MYSQL_ROW row;
     while((row = mysql_fetch_row(result))){
         json data;
-        data["dept_name"] = row[0] ? row[0] : "";
-        // data["manager_name"] = row[1] ? row[1]:"";
-        data["permission_level"] = row[2] ? atoi(row[2]) : 0;
-        data["login_id"] = row[3] ? row[3] : "";
-        data["dept_id"] = row[4] ? atoi(row[4]) : 0;
+        data["DEPT_ID"] = row[0] ? atoi(row[0]) : 0;
+        data["PERMISSION_LEVEL"] = row[1] ? atoi(row[1]) : 0;
+        data["LOGIN_ID"] = row[2] ? row[2] : "";
+        data["DEPT_NAME"] = row[3] ? row[3] : "";
+        
+        // data["LOGIN_PW"] = row[4] ?  row[4]: "";
 
         json_result.push_back(data);
 
@@ -182,6 +229,10 @@ void handle_client(int client_socket){
                 response = handle_make_dept(data);               
             }else if(type_ == "req_dept_read"){
                 response = handle_read_dept(data);
+            }else if(type_ == "req_dept_update"){
+                response = handle_update_dept(data);
+            }else if(type_ == "req_dept_delete"){
+                response = handle_delete_dept(data);
             }
 
 
@@ -211,8 +262,9 @@ json handle_read_schedule(){
     if (conn == nullptr) {
        cout<< "db 커넥션 오류 >>line 91";
     }
-
-    string query = "select * from schedule ORDER BY s_start_date ASC;";
+   
+    
+    string query = "select * from EVENTS ORDER BY START_DATE ASC limit 5;";
 
     //db로부터 받아온 내용을 json에 담아서 클라이언트로 전송 
 
@@ -236,20 +288,22 @@ json handle_read_schedule(){
     while((row = mysql_fetch_row(result))){
         
         //여기서 각 값들에 대해 json으로 넣어야 한다. 단! s_date 를 기준으로 
-        //schedule_id | s_start_date| s_end_date| s_name | organization_id | event_organization | event_detail     
-
+        
+//string query = "INSERT INTO EVENTS (START_DATE, END_DATE, EVENT_NAME, GROUP_ID, DEPT_ID, DESCRIPTION) VALUES ('" 
         json data;
-        data["schedule_id"]         = row[0] ? atoi(row[0]) : 0;
-        data["s_start_date"]        = row[1]  ? row[1] : "";
-        data["s_end_date"]          = row[2] ? row[2] : "";
-        data["s_name"]              = row[3] ? row[3] : "";
-        data["organization_id"]     = row[4] ? atoi(row[4]) : 0;
-        data["event_organization"]  = row[5] ? row[5] : "";
-        data["event_detail"]        = row[6] ? row[6] : "";
+        data["EVENT_ID"]          = row[0] ? atoi(row[0]) : 0;
+        data["GROUP_ID"]          = row[1] ? atoi(row[1]) : 0;
+        data["DEPT_ID"]           = row[2] ? atoi(row[2]) : 0;
+        data["EVENT_NAME"]        = row[3] ? row[3] : "";
+        data["START_DATE"]        = row[4] ? row[4] : "";
+        data["END_DATE"]          = row[5] ? row[5] : "";
+        data["DESCRIPTION"]       = row[6] ? row[6] : "";
 
         json_result.push_back(data);        
         
     }
+
+    cout<< json_result << endl;
 
     mysql_free_result(result);
 
@@ -261,21 +315,24 @@ json handle_read_schedule(){
 /**
  * 스케쥴을 서버에 insert
  */
+
 json handle_make_schedule(const json& data){
     json result;
-    if (!data.contains("s_date") || !data.contains("e_date") || !data.contains("event_name")  ) {
+    if (!data.contains("START_DATE") || !data.contains("END_DATE") || !data.contains("EVENT_NAME")  ) {
         result["status"] = "error";
         result["message"]= "필수 필드 누락";
         return result;
     }
 
+
+
     //삼항연산자로 존재하는지 확인후 담는다
-    string s_date = data.contains("s_date")? data["s_date"].get<string>() : "";
-    string e_date =  data.contains("e_date")? data["e_date"].get<string>() : "";
-    string event_name =  data.contains("event_name")? data["event_name"].get<string>() : "";    
-    string event_detail =  data.contains("event_detail")? data["event_detail"].get<string>() : "";    
-    string event_organization =  data.contains("event_organization")? data["event_organization"].get<string>() : "";    
-    int organization_id =  data.contains("organization_id")? data["organization_id"].get<int>() : 0;    
+    string s_date = data.contains("START_DATE")? data["START_DATE"].get<string>() : "";
+    string e_date =  data.contains("END_DATE")? data["END_DATE"].get<string>() : "";
+    string event_name =  data.contains("EVENT_NAME")? data["EVENT_NAME"].get<string>() : "";    
+    string event_detail =  data.contains("DESCRIPTION")? data["DESCRIPTION"].get<string>() : "";    
+    int group_id =  data.contains("GROUP_ID")? data["GROUP_ID"].get<int>() : 0;    
+    int dept_id =  data.contains("DEPT_ID")? data["DEPT_ID"].get<int>() : 0;    
 
 
     MYSQL* conn = connect_db();
@@ -285,15 +342,15 @@ json handle_make_schedule(const json& data){
         return result;
     }
 
-    string query = "INSERT INTO schedule (s_start_date, s_end_date, s_name, organization_id, event_organization, event_detail) VALUES ('" 
+    string query = "INSERT INTO EVENTS (START_DATE, END_DATE, EVENT_NAME, GROUP_ID, DEPT_ID, DESCRIPTION) VALUES ('" 
     + s_date + "', '" 
     + e_date + "', '" 
     + event_name + "', " 
-    + std::to_string(organization_id) + ", '"   
-    + event_organization + "', '"  
+    + std::to_string(group_id) + ", "   
+    + std::to_string(dept_id) + ", '"  
     + event_detail+ "')";
 
-    // cout << query << endl;
+    cout << query << endl;
 
     if(mysql_query(conn, query.c_str())!=0){
         cerr << "쿼리 실패: " << mysql_error(conn) <<endl;
@@ -313,10 +370,10 @@ json handle_make_schedule(const json& data){
     
 }
 
-json handle_delete_schedule(const json& data){
+json handle_delete_dept(const json& data){
     json result;
 
-    int schedule_id = data.contains("schedule_id") ? data["schedule_id"].get<int>():0;
+    int dept_id = data.contains("DEPT_ID") ? data["DEPT_ID"].get<int>():0;
 
     MYSQL* conn = connect_db();
     if (conn == nullptr) {
@@ -325,7 +382,40 @@ json handle_delete_schedule(const json& data){
         return result;
     }
 
-    string query = "delete from schedule where schedule_id = " + to_string(schedule_id); 
+    string query = "delete from DEPT where DEPT_ID = " + to_string(dept_id); 
+
+    cout << query << endl;
+
+    if(mysql_query(conn, query.c_str())!=0){
+        cerr << "쿼리 실패: " << mysql_error(conn) <<endl;
+        result["status"]= "error";
+        result["message"] = "DB 쿼리 실패: " +string(mysql_error(conn));
+        mysql_close(conn);
+        return result;
+    }
+
+
+    result["status"] = "success";
+    result["message"] = "부서가 성공적으로 삭제되었습니다.";    
+    mysql_close(conn);    
+    return result;  
+
+
+}
+
+json handle_delete_schedule(const json& data){
+    json result;
+
+    int event_id = data.contains("EVENT_ID") ? data["EVENT_ID"].get<int>():0;
+
+    MYSQL* conn = connect_db();
+    if (conn == nullptr) {
+        result["status"] = "error";
+        result["message"] = "DB 연결 실패";
+        return result;
+    }
+
+    string query = "delete from EVENTS where EVENT_ID = " + to_string(event_id); 
 
     cout << query << endl;
 
@@ -338,7 +428,7 @@ json handle_delete_schedule(const json& data){
     }
 
     result["status"] = "success";
-    result["message"] = "일정이 성공적으로 등록되었습니다.";    
+    result["message"] = "일정이 성공적으로 삭제되었습니다.";    
     mysql_close(conn);    
     return result;  
     
@@ -348,22 +438,24 @@ json handle_update_schedule(const json& data)
 {
 
     json result;
-    if (!data.contains("s_date") || !data.contains("e_date") || !data.contains("event_name")  ) {
+    if (!data.contains("START_DATE") || !data.contains("END_DATE") || !data.contains("EVENT_NAME")  ) {
         result["status"] = "error";
         result["message"]= "필수 필드 누락";
         return result;
     }
 
+    std::cout<< data << endl;
 
 
     //삼항연산자로 존재하는지 확인후 담는다
-    string s_date = data.contains("s_date")? data["s_date"].get<string>() : "";
-    string e_date =  data.contains("e_date")? data["e_date"].get<string>() : "";
-    string event_name =  data.contains("event_name")? data["event_name"].get<string>() : "";    
-    string event_detail =  data.contains("event_detail")? data["event_detail"].get<string>() : "";    
-    string event_organization =  data.contains("org_name")? data["org_name"].get<string>() : "";    
-    int schedule_id =  data.contains("schedule_id")? data["schedule_id"].get<int>() : 0;    
-    int org_id = data.contains("organization_id") ? data["organization_id"].get<int>():0;
+    string s_date = data.contains("START_DATE")? data["START_DATE"].get<string>() : "";
+    string e_date =  data.contains("END_DATE")? data["END_DATE"].get<string>() : "";
+    string event_name =  data.contains("EVENT_NAME")? data["EVENT_NAME"].get<string>() : "";    
+    string event_detail =  data.contains("DESCRIPTION")? data["DESCRIPTION"].get<string>() : "";    
+    // string event_organization =  data.contains("org_name")? data["org_name"].get<string>() : "";    
+    int dept_id =  data.contains("DEPT_ID")? data["DEPT_ID"].get<int>() : 0;    
+    int group_id = data.contains("GROUP_ID") ? data["GROUP_ID"].get<int>():0;
+    int event_id = data.contains("EVENT_ID") ? data["EVENT_ID"].get<int>():0;
 
     MYSQL* conn = connect_db();
     if (conn == nullptr) {
@@ -372,14 +464,15 @@ json handle_update_schedule(const json& data)
         return result;
     }
 
-    string query = "UPDATE schedule SET "
-               "s_start_date = '" + s_date + "', "
-               "s_end_date = '" + e_date + "', "
-               "s_name = '" + event_name + "', "
-               "organization_id = " + to_string(org_id) + ", "
-               "event_organization = '" + event_organization + "', "
-               "event_detail = '" + event_detail + "' "
-               "WHERE schedule_id = " + to_string(schedule_id);
+   // string query = "INSERT INTO EVENTS (START_DATE, END_DATE, EVENT_NAME, GROUP_ID, DEPT_ID, DESCRIPTION) VALUES ('" 
+    string query = "UPDATE EVENTS SET "
+               "START_DATE = '" + s_date + "', "
+               "END_DATE = '" + e_date + "', "
+               "EVENT_NAME = '" + event_name + "', "
+               "GROUP_ID = " + to_string(group_id) + ", "
+               "DEPT_ID = '" + to_string(dept_id) + "', "
+               "DESCRIPTION = '" + event_detail + "' "
+               "WHERE EVENT_ID = " + to_string(event_id);
 
     cout << query << endl;
 

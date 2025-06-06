@@ -44,9 +44,6 @@ void MainPage::change_to_SchedulePage(){
     // 1. QStackedWidget에서 Schedule 위젯을 표시합니다.
     ui->stackedWidget->setCurrentWidget(schedulePage);
     qDebug() << "스케줄 페이지로 전환.";
-
-    // 행사 crud 를 보여주는 코드
-    // ui->stackedWidget->currentWidget()->layout()->addWidget(schedulePage);
     qDebug() << " 스케쥴 페이지를 메인에 표시.";
 }
 void MainPage::change_to_Dept_Page(){
@@ -54,7 +51,6 @@ void MainPage::change_to_Dept_Page(){
     // 1. QStackedWidget에서 Schedule 위젯을 표시합니다.
     ui->stackedWidget->setCurrentWidget(deptPage);
 
-    // ui->stackedWidget->currentWidget()->layout()->addWidget(deptPage);
 
     qDebug() << "dept_page를 메인에 표시.";
 }
