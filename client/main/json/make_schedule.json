@@ -1,12 +1,12 @@
 {
     "data": {
         "DEPT_ID": 1234,
-        "DESCRIPTION": "월곡동 나가\n월곡동 들어가",
-        "END_DATE": "2025-05-05 13:00:00",
-        "EVENT_ID": 268,
-        "EVENT_NAME": "월곡1동 새마을부녀회 월례회의",
+        "DESCRIPTION": "값을 넣으면",
+        "END_DATE": "2025-07-25 12:00:00",
+        "EVENT_ID": 504,
+        "EVENT_NAME": "비아동 방위협의회 월례회의",
         "GROUP_ID": 1234,
-        "START_DATE": "2025-05-05 09:00:00"
+        "START_DATE": "2025-07-25 09:00:00"
     },
     "type": "req_event_update"
 }

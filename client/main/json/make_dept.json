@@ -1,6 +1,10 @@
 {
     "data": {
-        "DEPT_ID": 34
+        "DEPT_ID": 3,
+        "DEPT_NAME": "여성아동과",
+        "LOGIN_ID": "w1234",
+        "LOGIN_PW": "1111",
+        "PERMISSION_LEVEL": 0
     },
-    "type": "req_dept_delete"
+    "type": "req_dept_update"
 }

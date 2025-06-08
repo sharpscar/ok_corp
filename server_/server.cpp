@@ -18,7 +18,7 @@ using namespace std;
 
 const char* HOST = "localhost";
 const char* USER = "root";
-const char* PASS = "1111";
+const char* PASS = "****";
 const char* DB   = "SOCIAL";
 
 constexpr int PORT = 9957;
@@ -262,9 +262,13 @@ json handle_read_schedule(){
     if (conn == nullptr) {
        cout<< "db 커넥션 오류 >>line 91";
     }
-   
+    // +----------+----------+---------+--------------------------------------------+------------+------------+-------------+
+    // | EVENT_ID | GROUP_ID | DEPT_ID | EVENT_NAME                                 | START_DATE | END_DATE   | DESCRIPTION |
+    // +----------+----------+---------+--------------------------------------------+------------+------------+-------------+
     
-    string query = "select * from EVENTS ORDER BY START_DATE ASC limit 5;";
+    
+    string query = "select * from EVENTS ORDER BY START_DATE ASC limit ;";
+    // string query = "select EVENT_ID,GROUP_ID,DEPT_ID,EVENT_NAME,START_DATE,END_DATE,DESCRIPTION,DEPT_MANAGER from EVENTS natural join DEPT LIMIT 70;";
 
     //db로부터 받아온 내용을 json에 담아서 클라이언트로 전송 
 
@@ -298,7 +302,7 @@ json handle_read_schedule(){
         data["START_DATE"]        = row[4] ? row[4] : "";
         data["END_DATE"]          = row[5] ? row[5] : "";
         data["DESCRIPTION"]       = row[6] ? row[6] : "";
-
+        data["DEPT_MANAGER"]      = row[7] ? row[7] : "";
         json_result.push_back(data);        
         
     }
